@@ -1,26 +1,34 @@
 "use client";
 import Button from "@/components/Button";
+import { UserContextAuth } from "@/context/userContext";
+import Api from "@/services/Api";
 import { useEffect, useState } from "react";
 
 const Register = () => {
-  const [iconValue, setIconValue] = useState("");
-  const handleFileChange = (event: any) => {
-    const file = event.target.files[0];
-    if (file)
-      [
-        processImg(file, (base64Data: any) => {
-          setIconValue(base64Data);
-        }),
-      ];
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    wallet: "",
+    iconUser: null,
+  });
+  let dataRegister;
+  const handleOnChange = (e: any) => {
+    const { name, value, files } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: files ? files[0] : value,
+    }));
   };
-
-  const processImg = (file: any, callback: any) => {
-    const reader = new FileReader();
-    reader.onloadend = function () {
-      const base64Data = reader.result;
-      return callback(base64Data);
-    };
-    reader.readAsDataURL(file);
+  const handleSubmit = async (e: any) => {
+    try {
+      const result = await Api.post("account/createAccount", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      return (dataRegister = result.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -29,45 +37,56 @@ const Register = () => {
         <div className="shadow-xl w-96 h-96 flex flex-col justify-center items-center">
           <h1 className="uppercase text-xl w-fit mb-4">cadastro</h1>
           <form
-            action=""
+            method="post"
             className="flex flex-col gap-4  w-fit "
             encType="multipart/form-data"
+            onSubmit={handleSubmit}
           >
             <input
               type="text"
-              placeholder="Name"
+              placeholder="name"
+              name="name"
               className="w-80 p-2 rounded outline-none shadow-md border 
-              border-gray-50 "
+              border-gray-50"
+              value={formData.name}
+              onChange={handleOnChange}
             />
             <input
               type="email"
-              placeholder="Email"
+              placeholder="email"
+              name="email"
               className="w-80 p-2 rounded outline-none shadow-md border 
-              border-gray-50 "
+              border-gray-50"
+              value={formData.email}
+              onChange={handleOnChange}
             />
             <input
               type="password"
-              placeholder="Senha"
+              placeholder="senha"
+              name="password"
               className="w-80 p-2 rounded outline-none shadow-md border 
               border-gray-50"
+              value={formData.password}
+              onChange={handleOnChange}
             />
             <input
               type="text"
               placeholder="Valor a ser adicionado a carteira..."
+              name="wallet"
               className="w-80 p-2 rounded outline-none shadow-md border 
               border-gray-50"
+              value={formData.wallet}
+              onChange={handleOnChange}
             />
-            <input type="file" onChange={handleFileChange} />
-
+            <input
+              type="file"
+              name="iconUser"
+              id="iconUser"
+              onChange={handleOnChange}
+            />
             <span></span>
 
-            <Button
-              text={"Cadastrar-se"}
-              handleFunction={(e: any) => {
-                e.preventDefault();
-                console.log(iconValue);
-              }}
-            />
+            <Button text={"Cadastrar-se"} />
           </form>
         </div>
       </section>
