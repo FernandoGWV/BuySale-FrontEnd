@@ -1,7 +1,7 @@
 "use client";
 import Api from "@/services/Api";
 import { useRouter } from "next/navigation";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 interface IAuthContext {
   isLoged: boolean;
@@ -20,6 +20,10 @@ const UserAuthContext = ({
   const [isLoged, setIsLoged] = useState(false);
   const [dataUser, setDataUser] = useState<IUser | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    console.log(dataUser, "DADOS DE USUARIO");
+  }, []);
   const sessionCreate = async (email: string, password: string) => {
     try {
       const result = await Api.post("account/session", {

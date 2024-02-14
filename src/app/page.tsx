@@ -1,6 +1,7 @@
-"use client";
+"use client"; 
 import { UserContextAuth } from "@/context/userContext";
 import { DesligarIcon, UserIcon } from "@/imgs";
+import Image from "next/image";
 import { useEffect } from "react";
 const Home = () => {
   const { dataUser } = UserContextAuth();
@@ -32,8 +33,8 @@ const Home = () => {
             </button>
           </div>
           <div className="flex items-center gap-4">
-            <p className="text-white uppercase text-xl">{dataUser?.name}Take</p>
-            <UserIcon className="text-6xl" />
+            <p className="text-white uppercase text-xl">{dataUser?.name}</p>
+            <img src={`${process.env.NEXT_PUBLIC_URL}/${dataUser?.userIcon}` + ".jpg"}  />
             <DesligarIcon className="text-3xl hover:cursor-pointer " />
           </div>
         </div>

@@ -1,27 +1,29 @@
 "use client";
-import Button from "@/components/Button";
+import Button from "@/app/components/Button";
 import { UserContextAuth } from "@/context/userContext";
 import Api from "@/services/Api";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 const Register = () => {
   const { register, handleSubmit } = useForm();
   const { dataUser } = UserContextAuth();
   const onSubmit = async (data: any) => {
-    const { files } = data;
+    const { files, title, descripte, price } = data;
     console.log(data);
     try {
-      const resultProduct = await Api.post(
-        `/products/create/${1}`,
-        { ...data, files: null },
-        {
-          headers: { "Content-Type": "multipart/form-data" },
+      const resultProduct = await Api.post(`/products/create/${1}`, {
+        title,
+        descripte,
+        price,
+      }).then(async (dados: any) => {
+        console.log(dados.data.product, "DADOS");
+        if (dados.data.status) {
+          const result = await Api.post(
+            `/imagesUpload/${dados.data.product.id}`,
+            files
+          );
+          return result;
         }
-      );
-      /*   const result = await Api.post("/imagesUpload", files, {
-        headers: { "Content-Type": "multipart/form-data" },
       });
-      console.log(result.data); */
     } catch (error) {
       console.log(error);
     }

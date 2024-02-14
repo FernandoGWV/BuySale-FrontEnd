@@ -1,6 +1,5 @@
 "use client";
-
-import Button from "@/components/Button";
+import Button from "@/app/components/Button"
 import { UserContextAuth } from "@/context/userContext";
 import { useState } from "react";
 
