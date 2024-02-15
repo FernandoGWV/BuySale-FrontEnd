@@ -1,12 +1,16 @@
 "use client";
-import Button from "@/app/components/Button"
+import Button from "@/app/components/Button";
 import { UserContextAuth } from "@/context/userContext";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { GoArrowLeft } from "react-icons/go";
 
 const Login = () => {
   const [emailUser, setEmailUser] = useState("");
   const [passwordUser, setPasswordUser] = useState("");
   const { sessionCreate } = UserContextAuth();
+  const router = useRouter();
 
   return (
     <>
@@ -40,13 +44,19 @@ const Login = () => {
           <p>
             Não tem Conta?{" "}
             <a
-              href="#"
+              href="/auth/register"
               className="underline underline-offset-2 decoration-black hover:decoration-sky-400 hover:text-sky-400"
             >
               Criar Uma Conta.
             </a>
           </p>
         </div>
+        <button
+          className="bg-myColor p-1 max-w-40 text-white rounded-md text-center uppercase px-2 mt-5"
+          onClick={router.back}
+        >
+          <GoArrowLeft />
+        </button>
       </section>
     </>
   );

@@ -8,6 +8,7 @@ interface IAuthContext {
   sessionCreate(email: string, password: string): void;
   dataUser: IUser | null;
   deslogar(): void;
+  newUser(data: any, file: any): void;
 }
 
 const UserAuthProvider = createContext({} as IAuthContext);
@@ -22,7 +23,10 @@ const UserAuthContext = ({
   const router = useRouter();
 
   useEffect(() => {
-    console.log(dataUser, "DADOS DE USUARIO");
+    if (localStorage.getItem("@user") && localStorage.getItem("@token")) {
+      setDataUser(JSON.parse(localStorage.getItem("@user") || "[]"));
+      setIsLoged(true);
+    }
   }, []);
   const sessionCreate = async (email: string, password: string) => {
     try {
@@ -31,6 +35,7 @@ const UserAuthContext = ({
         password: password,
       }).then((dados) => {
         localStorage.setItem("@token", dados.data.token);
+        localStorage.setItem("@user", JSON.stringify(dados.data.user));
         setDataUser(dados.data.user);
         setIsLoged(true);
 
@@ -41,11 +46,43 @@ const UserAuthContext = ({
     }
   };
 
-  const deslogar = () => {};
+  const newUser = async (data: any, file: any) => {
+    try {
+      const result = await Api.post(
+        "/account/createAccount",
+        {
+          ...data,
+          iconUser: file,
+        },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      ).then((dados) => {
+        localStorage.setItem("@token", dados.data.token);
+        localStorage.setItem("@user", JSON.stringify(dados.data.user));
+        setDataUser(dados.data.user);
+        setIsLoged(true);
+        router.push("/");
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deslogar = () => {
+    if (localStorage.getItem("@user") && localStorage.getItem("@token")) {
+      localStorage.removeItem("@user");
+      localStorage.removeItem("@token");
+      setDataUser(null);
+      setIsLoged(false);
+    }
+  };
 
   return (
     <UserAuthProvider.Provider
-      value={{ isLoged, sessionCreate, dataUser, deslogar }}
+      value={{ isLoged, sessionCreate, dataUser, deslogar, newUser }}
     >
       {children}
     </UserAuthProvider.Provider>
