@@ -20,6 +20,7 @@ const UserAuthContext = ({
 }>) => {
   const [isLoged, setIsLoged] = useState(false);
   const [dataUser, setDataUser] = useState<IUser | null>(null);
+  const [products, setProducts] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -28,6 +29,7 @@ const UserAuthContext = ({
       setIsLoged(true);
     }
   }, []);
+
   const sessionCreate = async (email: string, password: string) => {
     try {
       const result = await Api.post("account/session", {
@@ -38,7 +40,6 @@ const UserAuthContext = ({
         localStorage.setItem("@user", JSON.stringify(dados.data.user));
         setDataUser(dados.data.user);
         setIsLoged(true);
-
         router.push("/");
       });
     } catch (error) {

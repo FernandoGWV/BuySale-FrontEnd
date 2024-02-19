@@ -1,15 +1,31 @@
 "use client";
 import { UserContextAuth } from "@/context/userContext";
-import { DesligarIcon, UserIcon } from "@/imgs";
-import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
-import "dotenv/config";
-const Home = () => {
-  const { dataUser, isLoged, deslogar } = UserContextAuth();
+import { DesligarIcon } from "@/imgs";
+import { useEffect, useState } from "react";
+import Api from "@/services/Api";
+const Products = () => {
+  const { dataUser, deslogar, isLoged } = UserContextAuth();
+
+  const [products, setProducts] = useState<[]>();
   useEffect(() => {
-    console.log(dataUser);
+    getProduct();
   }, []);
+  const getProduct = async () => {
+    try {
+      const result = await Api.get("/products").then((dados) => {
+        const filteredProducts = dados.data.data.filter(
+          (item: any) => item.id_user === dataUser?.id
+        );
+        setProducts(filteredProducts);
+        console.log(dados, "DADOS");
+      });
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    console.log(products, "PRODUTOS FILTERED");
+  }, [products]);
   return (
     <>
       <nav className="bg-myColor">
@@ -33,9 +49,9 @@ const Home = () => {
                     )}
               </span>
             </p>
-            <Link href={"/products"}>
+            <Link href={"/"}>
               <button className="bg-white p-1 w-32 rounded-md uppercase">
-                meus produtos
+                HOME
               </button>
             </Link>
             <button className="bg-white p-1 w-24 rounded-md uppercase">
@@ -68,8 +84,15 @@ const Home = () => {
           </div>
         </div>
       </nav>
+      <section className="container mx-auto">
+        <div>
+          <h1 className="uppercase border-b border-black w-fit mt-6">
+            meus produtos
+          </h1>
+        </div>
+      </section>
     </>
   );
 };
 
-export default Home;
+export default Products;

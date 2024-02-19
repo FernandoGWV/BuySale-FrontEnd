@@ -2,8 +2,11 @@
 import Button from "@/app/components/Button";
 import { UserContextAuth } from "@/context/userContext";
 import Api from "@/services/Api";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { GoArrowLeft } from "react-icons/go";
 const Register = () => {
+  const router = useRouter();
   const { register, handleSubmit } = useForm();
   const { dataUser } = UserContextAuth();
   const onSubmit = async (data: any) => {
@@ -32,8 +35,10 @@ const Register = () => {
   return (
     <>
       <section className="container mx-auto flex items-center h-screen justify-center ">
-        <div className="shadow-xl w-96 h-96 flex flex-col justify-center items-center">
-          <h1 className="uppercase text-xl w-fit mb-4">cadastro</h1>
+        <div className="w-96 h-96 flex flex-col justify-center items-center">
+          <h1 className="uppercase text-xl w-fit mb-4">
+            Cadastrar novo produto
+          </h1>
           <div className="flex flex-col gap-4  w-fit">
             <input
               type="text"
@@ -66,6 +71,12 @@ const Register = () => {
               }}
             />
           </div>
+          <button
+            className="bg-myColor p-1 max-w-40 text-white rounded-md text-center uppercase px-2 mt-5"
+            onClick={router.back}
+          >
+            <GoArrowLeft />
+          </button>
         </div>
       </section>
     </>
