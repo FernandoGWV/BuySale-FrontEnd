@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
 import "dotenv/config";
+import ProductsList from "./components/Products";
+import AllProducts from "./components/allProducts";
 const Home = () => {
   const { dataUser, isLoged, deslogar } = UserContextAuth();
   useEffect(() => {
@@ -12,7 +14,7 @@ const Home = () => {
   }, []);
   return (
     <>
-      <nav className="bg-myColor">
+      <nav className="bg-myColor shadow-stone-500 shadow-md">
         <div className=" container mx-auto  flex item-center justify-between h-20 ">
           <div className="  flex items-center gap-5">
             <p className="bg-white p-1 max-w-40  rounded-md text-center uppercase px-2">
@@ -68,6 +70,19 @@ const Home = () => {
           </div>
         </div>
       </nav>
+      <section className="container mx-auto mt-10">
+        <div>
+          <div className="flex">
+            <input
+              type="text"
+              className="mx-auto outline-0 shadow-md   w-6/12 h-14 text-myColor pl-2 rounded-3xl"
+            />
+          </div>
+          <div className="mt-6 flex flex-wrap justify-start  w-full gap-5">
+            <AllProducts />
+          </div>
+        </div>
+      </section>
     </>
   );
 };

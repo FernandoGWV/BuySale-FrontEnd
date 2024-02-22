@@ -11,17 +11,14 @@ type IProps = {
   $active?: boolean;
 };
 
-const ProductsList = (props: IProps) => {
+const AllProducts = (props: IProps) => {
   const { dataUser, deslogar, isLoged } = UserContextAuth();
-  const [userProducts, setUserProducts] = useState<[]>();
+  const [allProducts, setAllProducts] = useState<[]>();
   const getProduct = async () => {
     try {
-      const result = await Api.get("/products").then((dados) => {
-        const filteredProducts = dados.data.data.filter(
-          (item: any) => item.id_user === dataUser?.id
-        );
-        setUserProducts(filteredProducts);
-        console.log(dados, "DADOS");
+      const resultAll = await Api.get("/products").then((dados) => {
+        setAllProducts(dados.data.data);
+        console.log(dados, "DADOS2");
       });
     } catch (error) {}
   };
@@ -32,7 +29,7 @@ const ProductsList = (props: IProps) => {
   const getProducts = async () => {};
   return (
     <>
-      {userProducts?.map((item: IProduct) => {
+      {allProducts?.map((item: IProduct) => {
         return (
           <>
             <div className="flex flex-col gap-10  shadow-md w-56  max-h-96 rounded-lg items-center ">
@@ -80,4 +77,4 @@ const ProductsList = (props: IProps) => {
   );
 };
 
-export default ProductsList;
+export default AllProducts;
