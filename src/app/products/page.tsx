@@ -3,41 +3,27 @@ import { UserContextAuth } from "@/context/userContext";
 import Link from "next/link";
 import { DesligarIcon, LikeIcon } from "@/imgs";
 import { useEffect, useState } from "react";
-import Api from "@/services/Api";
 import Button from "../components/Button";
 import { GrAddCircle } from "react-icons/gr";
-import { GrEdit } from "react-icons/gr";
 import ProductsList from "../components/Products";
+import { useRouter } from "next/navigation";
 
 const Products = () => {
   const { dataUser, deslogar, isLoged } = UserContextAuth();
+  const router = useRouter();
 
-  const [products, setProducts] = useState<[]>();
-
-  const getProduct = async () => {
-    try {
-      const result = await Api.get("/products").then((dados) => {
-        const filteredProducts = dados.data.data.filter(
-          (item: any) => item.id_user === dataUser?.id
-        );
-        setProducts(filteredProducts);
-        console.log(dados, "DADOS");
-      });
-    } catch (error) {}
-  };
   useEffect(() => {
-    if (products?.length === 0) {
-      getProduct();
+    if (!isLoged) {
+      router.push("/auth");
     }
   }, []);
-
   return (
     <>
       <div className="mb-7">
         <nav className="bg-myColor shadow-stone-500 shadow-md">
           <div className=" container mx-auto  flex item-center justify-between h-20 ">
             <div className="  flex items-center gap-5">
-              <p className="bg-white p-1 max-w-40  rounded-md text-center uppercase px-2">
+              <p className="bg-white p-1 max-w-60  rounded-md text-center uppercase px-2">
                 carteira:{" "}
                 <span>
                   {isLoged
@@ -97,7 +83,7 @@ const Products = () => {
             <h1 className="uppercase border-b border-black w-fit ">
               meus produtos
             </h1>
-            <div className="flex">
+            <div className="flex items-center">
               <p className="mr-4">Adicionar</p>
               <Link href={"/products/register"}>
                 <Button text={<GrAddCircle style={{ fontSize: 20 }} />} />

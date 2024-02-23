@@ -2,8 +2,8 @@ import { IconType } from "react-icons";
 
 type IProps = {
   text?: any;
-  handleFunction?(): void;
-  handleSubmit?(): void;
+  handleFunction?(): any;
+  handleSubmit?(): any;
 };
 
 const Button = (props: IProps) => {

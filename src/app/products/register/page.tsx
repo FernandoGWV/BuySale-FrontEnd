@@ -7,23 +7,23 @@ import { useForm } from "react-hook-form";
 import { GoArrowLeft } from "react-icons/go";
 const Register = () => {
   const router = useRouter();
-  const { register, handleSubmit } = useForm();
   const { dataUser } = UserContextAuth();
+  const { register, handleSubmit } = useForm();
   const onSubmit = async (data: any) => {
     const { files, title, descripte, price } = data;
     console.log(data);
     try {
-      const resultProduct = await Api.post(`/products/create/${1}`, {
+      const resultProduct = await Api.post(`/products/create/${dataUser?.id}`, {
         title,
         descripte,
         price,
       }).then(async (dados: any) => {
-        console.log(dados.data.product, "DADOS");
         if (dados.data.status) {
           const result = await Api.post(
             `/imagesUpload/${dados.data.product.id}`,
             files
           );
+          router.push("/products");
           return result;
         }
       });
@@ -73,7 +73,7 @@ const Register = () => {
           </div>
           <button
             className="bg-myColor p-1 max-w-40 text-white rounded-md text-center uppercase px-2 mt-5"
-            onClick={router.back}
+            onClick={() => router.push("/")}
           >
             <GoArrowLeft />
           </button>

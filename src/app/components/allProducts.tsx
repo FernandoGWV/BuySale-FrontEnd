@@ -17,8 +17,15 @@ const AllProducts = (props: IProps) => {
   const getProduct = async () => {
     try {
       const resultAll = await Api.get("/products").then((dados) => {
-        setAllProducts(dados.data.data);
-        console.log(dados, "DADOS2");
+        if (dados.data.data) {
+          const productsData = dados.data.data;
+          const randomItens = productsData.sort(() => Math.random() - 0.5);
+          const arraySLice = randomItens.slice(
+            0,
+            Math.min(15, randomItens.lenght)
+          );
+          setAllProducts(randomItens);
+        }
       });
     } catch (error) {}
   };
@@ -26,7 +33,6 @@ const AllProducts = (props: IProps) => {
     getProduct();
   }, []);
 
-  const getProducts = async () => {};
   return (
     <>
       {allProducts?.map((item: IProduct) => {

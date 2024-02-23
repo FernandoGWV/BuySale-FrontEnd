@@ -98,7 +98,7 @@ const Register = () => {
           </div>
           <button
             className="bg-myColor p-1 max-w-40 text-white rounded-md text-center uppercase px-2 mt-5"
-            onClick={router.back}
+            onClick={() => router.push("/")}
           >
             <GoArrowLeft />
           </button>

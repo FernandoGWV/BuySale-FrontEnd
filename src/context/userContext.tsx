@@ -36,6 +36,7 @@ const UserAuthContext = ({
         email: email,
         password: password,
       }).then((dados) => {
+        console.log(dados);
         localStorage.setItem("@token", dados.data.token);
         localStorage.setItem("@user", JSON.stringify(dados.data.user));
         setDataUser(dados.data.user);

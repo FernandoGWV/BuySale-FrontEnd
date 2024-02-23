@@ -21,15 +21,19 @@ const ProductsList = (props: IProps) => {
           (item: any) => item.id_user === dataUser?.id
         );
         setUserProducts(filteredProducts);
-        console.log(dados, "DADOS");
+        console.log(dados, "DADOS PRODUSC");
       });
     } catch (error) {}
   };
+
   useEffect(() => {
     getProduct();
   }, []);
 
-  const getProducts = async () => {};
+  useEffect(() => {
+    getProduct();
+  }, [dataUser]);
+
   return (
     <>
       {userProducts?.map((item: IProduct) => {
