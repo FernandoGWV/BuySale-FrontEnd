@@ -1,0 +1,18 @@
+.animationModal{
+    animation: modalAnimation ease-in 500ms;
+}
+
+
+
+@keyframes modalAnimation {
+    to{
+  transform: translateY(0px);
+  opacity: initial;
+  
+    }
+    from{
+        transform: translateY(-10px);
+        opacity: 0;
+        
+    }
+}
