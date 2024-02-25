@@ -41,7 +41,7 @@ const SearchProducts = (props: any) => {
       if (searchText) {
         getProduct(searchText);
       }
-    }, 700);
+    }, 500);
   };
 
   return (

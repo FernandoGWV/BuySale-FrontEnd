@@ -7,9 +7,12 @@ import Button from "../components/Button";
 import { GrAddCircle } from "react-icons/gr";
 import ProductsList from "../components/Products";
 import { useRouter } from "next/navigation";
+import ModalUpdateProduct from "../components/modalComponents/modalUpdateProduct";
 
 const Products = () => {
   const { dataUser, deslogar, isLoged } = UserContextAuth();
+  const [modalActive, setModalActive] = useState(false);
+  const [getOnlyProduct, setGetOnlyProduct] = useState({});
   const router = useRouter();
 
   useEffect(() => {
@@ -91,9 +94,21 @@ const Products = () => {
             </div>
           </div>
           <div className="mt-6 flex flex-wrap justify-start  w-full gap-5">
-            <ProductsList $active={true} />
+            <ProductsList
+              $active={true}
+              setGetOnlyProduct={setGetOnlyProduct}
+              setModalActive={setModalActive}
+            />
           </div>
         </section>
+        <ModalUpdateProduct
+          modalActive={modalActive}
+          setModalActive={setModalActive}
+          getOnlyProduct={getOnlyProduct}
+          onClickOutside={() => {
+            setModalActive(false);
+          }}
+        />
       </div>
     </>
   );

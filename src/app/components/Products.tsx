@@ -6,14 +6,18 @@ import { useEffect, useState } from "react";
 import Button from "./Button";
 import { GrEdit } from "react-icons/gr";
 import { LikeIcon } from "@/imgs";
+import React, { Dispatch, SetStateAction } from "react";
 
 type IProps = {
   $active?: boolean;
+  setModalActive?: Dispatch<SetStateAction<boolean>>;
+  setGetOnlyProduct?: any;
 };
 
 const ProductsList = (props: IProps) => {
   const { dataUser, deslogar, isLoged } = UserContextAuth();
   const [userProducts, setUserProducts] = useState<[]>();
+  const [getOnlyProduct, setGetOnlyProduct] = useState({});
   const getProduct = async () => {
     try {
       const result = await Api.get("/products").then((dados) => {
@@ -46,7 +50,21 @@ const ProductsList = (props: IProps) => {
                     {item.title}
                   </h1>
                   {props.$active ? (
-                    <Button text={<GrEdit fontSize={16} />} />
+                    <Button
+                      handleFunction={() => {
+                        props.setGetOnlyProduct({
+                          id: item.id,
+                          title: item.title,
+                          img: item.images[0],
+                          descripte: item.descripte,
+                          price: item.price,
+                        });
+                        if (props.setModalActive) {
+                          props.setModalActive(true);
+                        }
+                      }}
+                      text={<GrEdit fontSize={16} />}
+                    />
                   ) : null}
                 </div>
                 <img
