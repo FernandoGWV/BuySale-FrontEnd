@@ -9,6 +9,7 @@ interface IAuthContext {
   dataUser: IUser | null;
   deslogar(): void;
   newUser(data: any, file: any): void;
+  updateUser(data: {}): void;
 }
 
 const UserAuthProvider = createContext({} as IAuthContext);
@@ -72,6 +73,15 @@ const UserAuthContext = ({
       console.log(error);
     }
   };
+  const updateUser = async (data: {}) => {
+    try {
+      const response = await Api.put(
+        `/account/updateAccount/${dataUser?.id}`,
+        data
+      );
+      console.log(response);
+    } catch (error) {}
+  };
 
   const deslogar = () => {
     if (localStorage.getItem("@user") && localStorage.getItem("@token")) {
@@ -84,7 +94,14 @@ const UserAuthContext = ({
 
   return (
     <UserAuthProvider.Provider
-      value={{ isLoged, sessionCreate, dataUser, deslogar, newUser }}
+      value={{
+        isLoged,
+        sessionCreate,
+        dataUser,
+        deslogar,
+        newUser,
+        updateUser,
+      }}
     >
       {children}
     </UserAuthProvider.Provider>

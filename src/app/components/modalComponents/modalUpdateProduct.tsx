@@ -1,6 +1,10 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import { IoCloseCircleSharp } from "react-icons/io5";
 import Button from "../Button";
+import Api from "@/services/Api";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import swal from "sweetalert";
 type IProps = {
   modalActive: boolean;
   setModalActive: Dispatch<SetStateAction<boolean>>;
@@ -8,11 +12,38 @@ type IProps = {
   onClickOutside: any;
 };
 const ModalUpdateProduct = (props: IProps) => {
+  const { register, handleSubmit } = useForm();
   const { getOnlyProduct, modalActive, onClickOutside } = props;
   const refDiv: any = useRef(null);
+  const router = useRouter();
 
-  const updateProduct = async () => {
+  const handleDelete = async () => {
     try {
+      const response = await Api.delete(
+        `/products/delete/${getOnlyProduct.id}`
+      );
+
+      swal("Deletado", "deletamos o seu produto com sucesso", "success").then(
+        () => {
+          window.location.reload();
+        }
+      );
+
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onSubmit = async (data: {}) => {
+    try {
+      const response = await Api.put(`/products/${getOnlyProduct.id}`, data);
+      swal("Atualizado", "Produto atualizado com sucesso", "success").then(
+        () => {
+          window.location.reload();
+        }
+      );
+      console.log(response.data);
     } catch (error) {}
   };
 
@@ -60,6 +91,7 @@ const ModalUpdateProduct = (props: IProps) => {
                   <input
                     type="text"
                     placeholder={getOnlyProduct.title}
+                    {...register("title")}
                     className="w-11/12  p-2 rounded outline-none shadow-md border 
               border-gray-50"
                   />
@@ -76,12 +108,12 @@ const ModalUpdateProduct = (props: IProps) => {
                   /> */}
 
                   <textarea
-                    name=""
                     id=""
-                    cols="30"
-                    rows="5 "
+                    cols={Number("30")}
+                    rows={Number("5")}
                     className="w-11/12   p-2 rounded outline-none shadow-md border 
               border-gray-50"
+                    {...register("descripte")}
                   ></textarea>
                 </div>
                 <div className="flex w-full gap-2 flex-wrap justify-between items-center">
@@ -91,13 +123,29 @@ const ModalUpdateProduct = (props: IProps) => {
                   <input
                     type="number"
                     placeholder={getOnlyProduct.price}
-                    className="w-11/12 p-2 rounded  outline-none shadow-md border 
+                    className="w-11/12 p-2  rounded  outline-none shadow-md border 
               border-gray-50"
+                    {...register("price")}
                   />
                 </div>
               </div>
             </div>
-            <Button text={"Salvar"} style={"mr-5 mt-4 mb-4"} />
+            <div>
+              <Button
+                handleFunction={() => {
+                  handleDelete();
+                }}
+                text={"Excluir"}
+                style={"mr-5 mt-4 mb-4 bg-red-700"}
+              />
+              <Button
+                handleFunction={() => {
+                  handleSubmit(onSubmit)();
+                }}
+                text={"Salvar"}
+                style={"mr-5 mt-4 mb-4"}
+              />
+            </div>
           </div>
         </div>
       )}
