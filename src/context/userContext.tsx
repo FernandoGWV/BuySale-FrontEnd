@@ -3,6 +3,15 @@ import Api from "@/services/Api";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 
+type IUpdate = {
+  id: number;
+  name?: string;
+  email?: string;
+  password?: string;
+  file?: File;
+  wallet?: number;
+};
+
 interface IAuthContext {
   isLoged: boolean;
   sessionCreate(email: string, password: string): void;
@@ -10,6 +19,7 @@ interface IAuthContext {
   deslogar(): void;
   newUser(data: any, file: any): void;
   updateUser(data: {}): void;
+  deleteUser(IdUser: number): void;
 }
 
 const UserAuthProvider = createContext({} as IAuthContext);
@@ -31,17 +41,27 @@ const UserAuthContext = ({
     }
   }, []);
 
+  const getProfileUser = async (idUser: number) => {
+    try {
+      const response = await Api.get(`/account/get-profile/${idUser}`).then(
+        (dados) => {
+          console.log(dados);
+          localStorage.setItem("@user", JSON.stringify(dados.data.data));
+          setDataUser(dados.data.data);
+        }
+      );
+    } catch (error) {}
+  };
+
   const sessionCreate = async (email: string, password: string) => {
     try {
       const result = await Api.post("account/session", {
         email: email,
         password: password,
       }).then((dados) => {
-        console.log(dados);
         localStorage.setItem("@token", dados.data.token);
-        localStorage.setItem("@user", JSON.stringify(dados.data.user));
-        setDataUser(dados.data.user);
         setIsLoged(true);
+        getProfileUser(dados.data.id);
         router.push("/");
       });
     } catch (error) {
@@ -73,13 +93,18 @@ const UserAuthContext = ({
       console.log(error);
     }
   };
-  const updateUser = async (data: {}) => {
+  const updateUser = async (data: IUpdate) => {
     try {
       const response = await Api.put(
         `/account/updateAccount/${dataUser?.id}`,
         data
       );
-      console.log(response);
+      if (response.data.status) {
+        localStorage.removeItem("@user");
+        console.log(data.id);
+        getProfileUser(data?.id);
+        router.push("/");
+      }
     } catch (error) {}
   };
 
@@ -92,6 +117,17 @@ const UserAuthContext = ({
     }
   };
 
+  const deleteUser = async (IdUser: number) => {
+    try {
+      const response = await Api.delete(`/account/${IdUser}`).then((dados) => {
+        if (dados.data.status) {
+          router.push("/");
+          deslogar();
+        }
+      });
+    } catch (error) {}
+  };
+
   return (
     <UserAuthProvider.Provider
       value={{
@@ -101,6 +137,7 @@ const UserAuthContext = ({
         deslogar,
         newUser,
         updateUser,
+        deleteUser,
       }}
     >
       {children}

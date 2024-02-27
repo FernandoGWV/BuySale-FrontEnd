@@ -9,13 +9,20 @@ import { useForm } from "react-hook-form";
 import { GoArrowLeft } from "react-icons/go";
 const UpdateUser = () => {
   const { register, handleSubmit } = useForm();
-  const { dataUser, updateUser } = UserContextAuth();
+  const { dataUser, updateUser, deleteUser } = UserContextAuth();
   const [file, setFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const inputRef = useRef(null);
   const router = useRouter();
   const onSubmit = async (data: any) => {
-    await updateUser(data);
+    const newFormData = Object.entries(data)
+      .filter(([chave, valor]) => valor.trim() !== "")
+      .reduce((obj, [chave, valor]) => {
+        obj[chave] = valor;
+        return obj;
+      }, {});
+
+    await updateUser({ ...newFormData, id: dataUser?.id });
   };
 
   const handleFileChange = (event: any) => {
@@ -112,12 +119,20 @@ const UpdateUser = () => {
             >
               ESCOLHER FOTO
             </button>
-            <Button
-              text={"Cadastrar-se"}
-              handleFunction={() => {
-                handleSubmit(onSubmit)();
-              }}
-            />
+            <div className="flex justify-between">
+              <Button
+                text={"Atualizar"}
+                handleFunction={() => {
+                  handleSubmit(onSubmit)();
+                }}
+              />
+              <Button
+                text={"Excluir conta"}
+                handleFunction={() => {
+                  deleteUser(Number(dataUser?.id));
+                }}
+              />
+            </div>
           </div>
           <button
             className="bg-myColor p-1 max-w-40 text-white rounded-md text-center uppercase px-2 mt-5"
