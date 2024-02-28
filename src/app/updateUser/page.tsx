@@ -16,13 +16,13 @@ const UpdateUser = () => {
   const router = useRouter();
   const onSubmit = async (data: any) => {
     const newFormData = Object.entries(data)
-      .filter(([chave, valor]) => valor.trim() !== "")
+      .filter(([chave, valor]: any) => valor.trim() !== "")
       .reduce((obj, [chave, valor]) => {
         obj[chave] = valor;
         return obj;
       }, {});
 
-    await updateUser({ ...newFormData, id: dataUser?.id });
+    await updateUser({ ...newFormData, id: dataUser?.id }, file);
   };
 
   const handleFileChange = (event: any) => {

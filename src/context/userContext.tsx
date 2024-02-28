@@ -18,7 +18,7 @@ interface IAuthContext {
   dataUser: IUser | null;
   deslogar(): void;
   newUser(data: any, file: any): void;
-  updateUser(data: {}): void;
+  updateUser(data: {}, file: any): void;
   deleteUser(IdUser: number): void;
 }
 
@@ -93,11 +93,20 @@ const UserAuthContext = ({
       console.log(error);
     }
   };
-  const updateUser = async (data: IUpdate) => {
+  const updateUser = async (data: IUpdate, file: any) => {
+    console.log(data, file);
     try {
       const response = await Api.put(
         `/account/updateAccount/${dataUser?.id}`,
-        data
+        {
+          ...data,
+          iconUser: file,
+        },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       if (response.data.status) {
         localStorage.removeItem("@user");
