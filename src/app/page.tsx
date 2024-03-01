@@ -37,9 +37,9 @@ const Home = () => {
       }
     };
 
-    document.addEventListener("click", handleClickOutSide, true);
+    document.addEventListener("click", handleClickOutSide);
     return () => {
-      document.removeEventListener("click", handleClickOutSide, true);
+      document.removeEventListener("click", handleClickOutSide);
     };
   }, [onClickOutside]);
 
@@ -82,7 +82,7 @@ const Home = () => {
                 <img
                   ref={imgRef}
                   onClick={() => {
-                    setOpenProfile(true);
+                    setOpenProfile((prev) => !prev);
                   }}
                   src={`${process.env.NEXT_PUBLIC_URL}/${dataUser?.userIcon}`}
                   alt="userIcon"
@@ -90,20 +90,23 @@ const Home = () => {
                 />
                 {openProfile && (
                   <div
-                    className="bg-white absolute top-20 right-0"
+                    className="bg-white rounded-sm animate-dropdown shadow-md absolute z-50 top-20 right-0"
                     ref={menuRef}
                   >
-                    <ul className="p-3">
-                      <li>
-                        <Link href={"#"}>Ver Perfil</Link>
-                      </li>
-                      <li>
-                        <Link href={"#"}>Editar Perfil</Link>
-                      </li>
-                      <li>
-                        <Link href={"#"}>Criar um novo Produto</Link>
-                      </li>
-                    </ul>
+                    <div className="p-3 flex flex-col gap-2 justify-center">
+                      <Link
+                        className="transition ease-in-out delay-150  hover:-translate-y-1 hover:scale-80 hover:shadow-md duration-300 cursor-pointer hover:bg-myColor hover:bg-opacity-10 p-1 rounded-md"
+                        href={"/updateUser"}
+                      >
+                        Editar perfil
+                      </Link>
+                      <Link
+                        className="transition ease-in-out delay-150  hover:-translate-y-1 hover:scale-80 hover:shadow-md duration-300 cursor-pointer hover:bg-myColor hover:bg-opacity-10 p-1 rounded-md"
+                        href={"/products/register"}
+                      >
+                        Criar um novo Produto
+                      </Link>
+                    </div>
                   </div>
                 )}
                 <DesligarIcon

@@ -47,13 +47,16 @@ const Register = () => {
               className="w-80 p-2 rounded outline-none shadow-md border 
               border-gray-50"
             />
-            <input
-              type="text"
+
+            <textarea
+              className="w-80 overflow-auto p-2 rounded outline-none shadow-md border 
+              border-gray-50"
               placeholder="Descrição do Produto..."
               {...register("descripte")}
-              className="w-80 p-2 rounded outline-none shadow-md border 
-              border-gray-50"
-            />
+              name=""
+              id=""
+              cols={30}
+            ></textarea>
             <input
               type="number"
               placeholder="Valor do produto"

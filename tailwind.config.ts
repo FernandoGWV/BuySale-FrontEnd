@@ -8,6 +8,15 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      keyframes: {
+        dropdown: {
+          to: { transform: "translateY(0px)", opacity: "initial" },
+          from: { transform: "translateY(-10px)", opacity: "0" },
+        },
+      },
+      animation: {
+        dropdown: "dropdown 600ms ease-in-out ",
+      },
       colors: {
         myColor: "#2E2E2E",
       },
