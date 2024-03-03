@@ -6,10 +6,14 @@ import Api from "@/services/Api";
 import Link from "next/link";
 import { AiFillRightCircle } from "react-icons/ai";
 import React, { useEffect, useRef, useState } from "react";
+import { socket } from "@/socket";
+import { useForm } from "react-hook-form";
 const Product = ({ params }: { params: { id: any } }) => {
   const { dataUser, deslogar, isLoged } = UserContextAuth();
   const [productUnique, setProductUnique] = useState<IProduct>();
   const [openProfile, setOpenProfile] = useState(false);
+  const [socketInstance] = useState(socket());
+  const { register, handleSubmit } = useForm();
   const imgRef: any = useRef(null);
   const menuRef: any = useRef(null);
   const [imgUnique, setImgUnique] = useState({
@@ -31,7 +35,12 @@ const Product = ({ params }: { params: { id: any } }) => {
 
   useEffect(() => {
     getProduct();
+
+    socketInstance.on("message", (mensagem) => {
+      console.log("Mensagem recebida", mensagem);
+    });
   }, []);
+
   const onClickOutside = () => {
     setOpenProfile(false);
   };
@@ -48,6 +57,10 @@ const Product = ({ params }: { params: { id: any } }) => {
       document.removeEventListener("click", handleClickOutSide);
     };
   }, [onClickOutside]);
+
+  const onSubmit = ({ message }: any) => {
+    socketInstance.emit("message", message);
+  };
 
   return (
     <>
@@ -193,8 +206,15 @@ const Product = ({ params }: { params: { id: any } }) => {
               type="text"
               className="w-4/5 outline-none p-3 rounded-md ml-2 mb-2"
               placeholder="Escreva sua mensagem"
+              {...register("message")}
             />
-            <AiFillRightCircle style={{ marginLeft: 20 }} fontSize={40} />
+
+            <AiFillRightCircle
+              type="submit"
+              onClick={handleSubmit(onSubmit)}
+              style={{ marginLeft: 20 }}
+              fontSize={40}
+            />
           </div>
         </div>
       </div>
