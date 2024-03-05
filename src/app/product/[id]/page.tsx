@@ -8,12 +8,23 @@ import { AiFillRightCircle } from "react-icons/ai";
 import React, { useEffect, useRef, useState } from "react";
 import { socket } from "@/socket";
 import { useForm } from "react-hook-form";
+import { UserIcon } from "@/imgs";
+
+interface IMessage {
+  name: string;
+  image: string;
+  text: string;
+  id: number;
+  isOwner: boolean;
+}
+
 const Product = ({ params }: { params: { id: any } }) => {
   const { dataUser, deslogar, isLoged } = UserContextAuth();
   const [productUnique, setProductUnique] = useState<IProduct>();
   const [openProfile, setOpenProfile] = useState(false);
   const [socketInstance] = useState(socket());
   const { register, handleSubmit } = useForm();
+  const [messages, setMessages] = useState<IMessage[]>([]);
   const imgRef: any = useRef(null);
   const menuRef: any = useRef(null);
   const [imgUnique, setImgUnique] = useState({
@@ -35,10 +46,15 @@ const Product = ({ params }: { params: { id: any } }) => {
 
   useEffect(() => {
     getProduct();
+  }, []);
 
+  useEffect(() => {
     socketInstance.on("message", (mensagem) => {
-      console.log("Mensagem recebida", mensagem);
+      setMessages((prev) => [...prev, mensagem]);
     });
+    return () => {
+      socketInstance.off("message");
+    };
   }, []);
 
   const onClickOutside = () => {
@@ -59,7 +75,53 @@ const Product = ({ params }: { params: { id: any } }) => {
   }, [onClickOutside]);
 
   const onSubmit = ({ message }: any) => {
-    socketInstance.emit("message", message);
+    const newMessage: any = {
+      text: message,
+      name: dataUser?.name,
+      image: dataUser?.userIcon,
+      id: dataUser?.id,
+    };
+
+    socketInstance.emit("message", newMessage);
+
+    setMessages((prev) => [
+      ...prev,
+      { ...newMessage, image: dataUser?.userIcon, isOwner: true },
+    ]);
+  };
+
+  const ChatMessage = ({ message, isCurrentUser, userAvatar }: any) => {
+    return (
+      <div
+        className={`w-full flex ${
+          isCurrentUser ? "justify-end" : "justify-start"
+        } items-center mb-2`}
+      >
+        {!isCurrentUser && (
+          <img
+            src={userAvatar}
+            alt="User Avatar"
+            className="w-8 h-8 rounded-full mr-2"
+          />
+        )}
+        <div
+          className={`max-w-xs py-2 px-4 rounded-lg ${
+            isCurrentUser
+              ? "bg-blue-500 text-white"
+              : "bg-gray-300 text-gray-700"
+          }`}
+        >
+          <p>{message}</p>
+        </div>
+        {isCurrentUser && (
+          <img
+            src={userAvatar}
+            alt="User Avatar"
+            className="w-8 h-8 rounded-full ml-2"
+          />
+        )}
+      </div>
+    );
   };
 
   return (
@@ -197,24 +259,36 @@ const Product = ({ params }: { params: { id: any } }) => {
             </div>
           </div>
         </div>
-        <div className="w-4/6 mx-auto bg-zinc-200 shadow-md h-80 mt-5 overflow-auto  relative  rounded-md">
-          <div>
-            <h1>chat aqui</h1>
-          </div>
-          <div className="flex w-full justify-center items-center absolute bottom-0">
-            <input
-              type="text"
-              className="w-4/5 outline-none p-3 rounded-md ml-2 mb-2"
-              placeholder="Escreva sua mensagem"
-              {...register("message")}
-            />
+        <div className="w-4/6 mx-auto bg-zinc-200 shadow-md h-80 mt-5   relative  rounded-md">
+          <div className="mx-auto p-4">
+            <div className="mb-4 h-64 overflow-auto">
+              {messages.map((item) => {
+                return (
+                  <>
+                    <ChatMessage
+                      message={item.text}
+                      isCurrentUser={item.isOwner}
+                      userAvatar={`${process.env.NEXT_PUBLIC_URL}/${item?.image}`}
+                    />
+                  </>
+                );
+              })}
+            </div>
+            <div className="flex w-10/12 justify-center items-center absolute bottom-0">
+              <input
+                type="text"
+                className="w-4/5 outline-none p-3 rounded-md ml-2 mb-2"
+                placeholder="Escreva sua mensagem"
+                {...register("message")}
+              />
 
-            <AiFillRightCircle
-              type="submit"
-              onClick={handleSubmit(onSubmit)}
-              style={{ marginLeft: 20 }}
-              fontSize={40}
-            />
+              <AiFillRightCircle
+                type="submit"
+                onClick={handleSubmit(onSubmit)}
+                style={{ marginLeft: 20 }}
+                fontSize={40}
+              />
+            </div>
           </div>
         </div>
       </div>
