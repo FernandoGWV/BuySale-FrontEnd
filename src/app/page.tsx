@@ -23,7 +23,7 @@ const Home = () => {
   const imgRef: any = useRef(null);
   const menuRef: any = useRef(null);
   useEffect(() => {
-    console.log(dataUser);
+    console.log("CONSOLE HOME", dataUser);
   }, []);
 
   const onClickOutside = () => {

@@ -45,7 +45,6 @@ const UserAuthContext = ({
     try {
       const response = await Api.get(`/account/get-profile/${idUser}`).then(
         (dados) => {
-          console.log(dados);
           localStorage.setItem("@user", JSON.stringify(dados.data.data));
           setDataUser(dados.data.data);
         }
@@ -60,6 +59,7 @@ const UserAuthContext = ({
         password: password,
       }).then((dados) => {
         localStorage.setItem("@token", dados.data.token);
+        console.log("id do usuario logado", dados.data.id);
         setIsLoged(true);
         getProfileUser(dados.data.id);
         router.push("/");
@@ -94,13 +94,13 @@ const UserAuthContext = ({
     }
   };
   const updateUser = async (data: IUpdate, file: any) => {
-    console.log(data, file);
+    console.log(data, dataUser?.userIcon);
     try {
       const response = await Api.put(
         `/account/updateAccount/${dataUser?.id}`,
         {
           ...data,
-          iconUser: file,
+          iconUser: file === null ? dataUser?.userIcon : file,
         },
         {
           headers: {
@@ -110,7 +110,6 @@ const UserAuthContext = ({
       );
       if (response.data.status) {
         localStorage.removeItem("@user");
-        console.log(data.id);
         getProfileUser(data?.id);
         router.push("/");
       }
@@ -136,7 +135,6 @@ const UserAuthContext = ({
       });
     } catch (error) {}
   };
-
   return (
     <UserAuthProvider.Provider
       value={{

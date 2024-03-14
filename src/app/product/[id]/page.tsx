@@ -12,9 +12,11 @@ import { UserIcon } from "@/imgs";
 
 interface IMessage {
   name: string;
-  image: string;
-  text: string;
   id: number;
+  message: string;
+  user_id: number;
+  product_id: number;
+  user_icon: string;
   isOwner: boolean;
 }
 
@@ -30,23 +32,37 @@ const Product = ({ params }: { params: { id: any } }) => {
   const [imgUnique, setImgUnique] = useState({
     path_image: "",
   });
-  const getProduct = async () => {
-    try {
-      const result = await Api.get("/products").then((dados) => {
-        const filteredProducts = dados.data.data.filter(
+
+  socketInstance.emit("entrarNaSala", productUnique?.id);
+  useEffect(() => {
+    const getProduct = async () => {
+      try {
+        const result = await Api.get("/products");
+        const filteredProducts = result.data.data.filter(
           (item: any) => item.id === Number(params.id)
         );
         setImgUnique(filteredProducts[0].images[0]);
         console.log(imgUnique);
         setProductUnique(filteredProducts[0]);
-        console.log(filteredProducts, "DADOS PRODUSC");
-      });
-    } catch (error) {}
-  };
+        const allMessages = filteredProducts.reduce((acc: any, curr: any) => {
+          return [
+            ...acc,
+            ...curr.messages.map((item: any) => {
+              return {
+                ...item,
+                isOwner: item.user_id === dataUser?.id,
+              };
+            }),
+          ];
+        }, []);
+        setMessages(allMessages);
+      } catch (error) {
+        console.error("Erro ao buscar produto:", error);
+      }
+    };
 
-  useEffect(() => {
     getProduct();
-  }, []);
+  }, [dataUser?.id]);
 
   useEffect(() => {
     socketInstance.on("message", (mensagem) => {
@@ -57,10 +73,10 @@ const Product = ({ params }: { params: { id: any } }) => {
     };
   }, []);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const onClickOutside = () => {
     setOpenProfile(false);
   };
-
   useEffect(() => {
     const handleClickOutSide: any = (event: any) => {
       if (event.tagert !== imgRef.current && event.target !== menuRef.current) {
@@ -74,19 +90,24 @@ const Product = ({ params }: { params: { id: any } }) => {
     };
   }, [onClickOutside]);
 
-  const onSubmit = ({ message }: any) => {
-    const newMessage: any = {
-      text: message,
+  const onSubmit = async ({ message }: any) => {
+    const Savemessages: any = {
+      message: message,
       name: dataUser?.name,
-      image: dataUser?.userIcon,
-      id: dataUser?.id,
+      user_id: dataUser?.id,
+      product_id: productUnique?.id,
+      user_icon: dataUser?.userIcon,
     };
-
-    socketInstance.emit("message", newMessage);
-
+    const response = await Api.post("/products/saveMessages", Savemessages);
+    console.log(productUnique?.messages);
+    socketInstance.emit("message", {
+      productId: productUnique?.id,
+      mensagem: { ...Savemessages },
+    });
+    console.log("Mensagens", messages);
     setMessages((prev) => [
       ...prev,
-      { ...newMessage, image: dataUser?.userIcon, isOwner: true },
+      { ...Savemessages, user_icon: dataUser?.userIcon, isOwner: true },
     ]);
   };
 
@@ -266,9 +287,9 @@ const Product = ({ params }: { params: { id: any } }) => {
                 return (
                   <>
                     <ChatMessage
-                      message={item.text}
+                      message={item.message}
                       isCurrentUser={item.isOwner}
-                      userAvatar={`${process.env.NEXT_PUBLIC_URL}/${item?.image}`}
+                      userAvatar={`${process.env.NEXT_PUBLIC_URL}/${item?.user_icon}`}
                     />
                   </>
                 );

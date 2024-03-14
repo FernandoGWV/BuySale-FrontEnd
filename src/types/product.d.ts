@@ -1,3 +1,12 @@
+type IMessages = {
+  id: number;
+  message: string;
+  name: string;
+  user_icon: string;
+  user_id: number;
+  product_id: number;
+};
+
 interface IProduct {
   title: string;
   descripte: string;
@@ -13,4 +22,5 @@ interface IProduct {
   its_buy?: number;
   like?: number;
   price: number;
+  messages?: [IMessages];
 }
