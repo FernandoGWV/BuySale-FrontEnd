@@ -7,6 +7,7 @@ import Button from "./Button";
 import { GrEdit } from "react-icons/gr";
 import { LikeIcon } from "@/imgs";
 import React, { Dispatch, SetStateAction } from "react";
+import Link from "next/link";
 
 type IProps = {
   $active?: boolean;
@@ -25,7 +26,6 @@ const ProductsList = (props: IProps) => {
           (item: any) => item.id_user === dataUser?.id
         );
         setUserProducts(filteredProducts);
-        console.log(dados, "DADOS PRODUSC");
       });
     } catch (error) {}
   };
@@ -43,8 +43,8 @@ const ProductsList = (props: IProps) => {
       {userProducts?.map((item: IProduct) => {
         return (
           <>
-            <div className="flex flex-col gap-10  shadow-md w-56  max-h-96 rounded-lg items-center ">
-              <div className="mb-2 w-52 flex flex-col justify-center items-start">
+            <div className="flex  flex-col gap-10  shadow-md w-56  max-h-96 rounded-lg items-center ">
+              <div className="mb-2  w-52 flex flex-col justify-center items-start">
                 <div className="flex w-full  mt-1 items-center justify-between">
                   <h1 className="uppercase border-b-2 border-myColor ">
                     {item.title}
@@ -67,11 +67,14 @@ const ProductsList = (props: IProps) => {
                     />
                   ) : null}
                 </div>
-                <img
-                  src={`${process.env.NEXT_PUBLIC_URL}/${item?.images[0].path_image}`}
-                  alt="imageProduct"
-                  className="mt-3 mx-auto rounded-lg w-52 h-52"
-                />
+                <Link href={`/product/${item.id}`}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`${process.env.NEXT_PUBLIC_URL}/${item?.images[0].path_image}`}
+                    alt="imageProduct"
+                    className="mt-3 mx-auto rounded-lg w-52 h-52"
+                  />
+                </Link>
                 <div className="mt-2 flex items-center justify-between relative  my-0 w-full">
                   <span
                     className="bg-myColor text-neutral-300 p-1 px-2  rounded-lg"

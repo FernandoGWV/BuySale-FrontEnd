@@ -59,7 +59,6 @@ const UserAuthContext = ({
         password: password,
       }).then((dados) => {
         localStorage.setItem("@token", dados.data.token);
-        console.log("id do usuario logado", dados.data.id);
         setIsLoged(true);
         getProfileUser(dados.data.id);
         router.push("/");
@@ -94,13 +93,13 @@ const UserAuthContext = ({
     }
   };
   const updateUser = async (data: IUpdate, file: any) => {
-    console.log(data, dataUser?.userIcon);
+    console.log(file);
     try {
       const response = await Api.put(
         `/account/updateAccount/${dataUser?.id}`,
         {
           ...data,
-          iconUser: file === null ? dataUser?.userIcon : file,
+          userIcon: file === null ? dataUser?.userIcon : file,
         },
         {
           headers: {

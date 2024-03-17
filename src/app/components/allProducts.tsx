@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Button from "./Button";
 import { GrEdit } from "react-icons/gr";
 import { LikeIcon } from "@/imgs";
+import Link from "next/link";
 
 type IProps = {
   $active?: boolean;
@@ -48,11 +49,13 @@ const AllProducts = (props: IProps) => {
                     <Button text={<GrEdit fontSize={16} />} />
                   ) : null}
                 </div>
-                <img
-                  src={`${process.env.NEXT_PUBLIC_URL}/${item?.images[0].path_image}`}
-                  alt="imageProduct"
-                  className="mt-3 mx-auto rounded-lg w-52 h-52"
-                />
+                <Link href={`/product/${item.id}`}>
+                  <img
+                    src={`${process.env.NEXT_PUBLIC_URL}/${item?.images[0].path_image}`}
+                    alt="imageProduct"
+                    className="mt-3 mx-auto rounded-lg w-52 h-52"
+                  />
+                </Link>
                 <div className="mt-2 flex items-center justify-between relative  my-0 w-full">
                   <span
                     className="bg-myColor text-neutral-300 p-1 px-2  rounded-lg"

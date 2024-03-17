@@ -28,7 +28,6 @@ const UpdateUser = () => {
   const handleFileChange = (event: any) => {
     const file = event.target.files[0];
     setFile(file);
-    console.log(file, "FILE");
     if (file) {
       const reader: any = new FileReader();
       reader.onload = () => {

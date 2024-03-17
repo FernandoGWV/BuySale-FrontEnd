@@ -28,8 +28,6 @@ const ModalUpdateProduct = (props: IProps) => {
           window.location.reload();
         }
       );
-
-      console.log(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -43,8 +41,9 @@ const ModalUpdateProduct = (props: IProps) => {
           window.location.reload();
         }
       );
-      console.log(response.data);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {

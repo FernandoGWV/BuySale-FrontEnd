@@ -22,9 +22,6 @@ const Home = () => {
   const inputValue = useRef();
   const imgRef: any = useRef(null);
   const menuRef: any = useRef(null);
-  useEffect(() => {
-    console.log("CONSOLE HOME", dataUser);
-  }, []);
 
   const onClickOutside = () => {
     setOpenProfile(false);

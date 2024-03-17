@@ -23,7 +23,7 @@ const SearchProducts = (props: any) => {
           const filteredProducts = productsData.filter((item: IProduct) =>
             item.title.toLocaleLowerCase().includes(value)
           );
-          console.log(dados.data.data);
+
           setAllProducts(filteredProducts);
         }
       });
@@ -36,7 +36,7 @@ const SearchProducts = (props: any) => {
     timer = setTimeout(() => {
       const searchText = event.target.value;
       // Realize a busca aqui com o termo searchText
-      console.log("Realizar busca com:", searchText);
+
       setTextValue(searchText);
       if (searchText) {
         getProduct(searchText);

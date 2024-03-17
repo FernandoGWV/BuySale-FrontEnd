@@ -42,7 +42,6 @@ const Product = ({ params }: { params: { id: any } }) => {
           (item: any) => item.id === Number(params.id)
         );
         setImgUnique(filteredProducts[0].images[0]);
-        console.log(imgUnique);
         setProductUnique(filteredProducts[0]);
         const allMessages = filteredProducts.reduce((acc: any, curr: any) => {
           return [
@@ -91,24 +90,28 @@ const Product = ({ params }: { params: { id: any } }) => {
   }, [onClickOutside]);
 
   const onSubmit = async ({ message }: any) => {
-    const Savemessages: any = {
-      message: message,
-      name: dataUser?.name,
-      user_id: dataUser?.id,
-      product_id: productUnique?.id,
-      user_icon: dataUser?.userIcon,
-    };
-    const response = await Api.post("/products/saveMessages", Savemessages);
-    console.log(productUnique?.messages);
-    socketInstance.emit("message", {
-      productId: productUnique?.id,
-      mensagem: { ...Savemessages },
-    });
-    console.log("Mensagens", messages);
-    setMessages((prev) => [
-      ...prev,
-      { ...Savemessages, user_icon: dataUser?.userIcon, isOwner: true },
-    ]);
+    const inputValue: HTMLInputElement | any =
+      document.getElementById("inputMessage");
+    if (message !== "") {
+      inputValue.value = "";
+      const Savemessages: any = {
+        message: message,
+        name: dataUser?.name,
+        user_id: dataUser?.id,
+        product_id: productUnique?.id,
+        user_icon: dataUser?.userIcon,
+      };
+      const response = await Api.post("/products/saveMessages", Savemessages);
+      socketInstance.emit("message", {
+        productId: productUnique?.id,
+        mensagem: { ...Savemessages },
+      });
+
+      setMessages((prev) => [
+        ...prev,
+        { ...Savemessages, user_icon: dataUser?.userIcon, isOwner: true },
+      ]);
+    }
   };
 
   const ChatMessage = ({ message, isCurrentUser, userAvatar }: any) => {
@@ -171,6 +174,11 @@ const Product = ({ params }: { params: { id: any } }) => {
             <Link href={"/products"}>
               <button className="bg-white p-1 w-32 rounded-md uppercase">
                 meus produtos
+              </button>
+            </Link>
+            <Link href={"/"}>
+              <button className="bg-white p-1 w-24 rounded-md uppercase">
+                Home
               </button>
             </Link>
             <button className="bg-white p-1 w-24 rounded-md uppercase">
@@ -298,17 +306,19 @@ const Product = ({ params }: { params: { id: any } }) => {
             <div className="flex w-10/12 justify-center items-center absolute bottom-0">
               <input
                 type="text"
+                id="inputMessage"
                 className="w-4/5 outline-none p-3 rounded-md ml-2 mb-2"
                 placeholder="Escreva sua mensagem"
                 {...register("message")}
               />
 
-              <AiFillRightCircle
-                type="submit"
-                onClick={handleSubmit(onSubmit)}
-                style={{ marginLeft: 20 }}
-                fontSize={40}
-              />
+              <button type="submit">
+                <AiFillRightCircle
+                  onClick={handleSubmit(onSubmit)}
+                  style={{ marginLeft: 20, cursor: "pointer" }}
+                  fontSize={40}
+                />
+              </button>
             </div>
           </div>
         </div>

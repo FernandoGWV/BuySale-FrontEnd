@@ -11,7 +11,6 @@ const Register = () => {
   const { register, handleSubmit } = useForm();
   const onSubmit = async (data: any) => {
     const { files, title, descripte, price } = data;
-    console.log(data);
     try {
       const resultProduct = await Api.post(`/products/create/${dataUser?.id}`, {
         title,
