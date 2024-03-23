@@ -68,9 +68,11 @@ const Home = () => {
                 meus produtos
               </button>
             </Link>
-            <button className="bg-white p-1 w-24 rounded-md uppercase">
-              comprados
-            </button>
+            <Link href={"/products/purchased"}>
+              <button className="bg-white p-1 w-24 rounded-md uppercase">
+                Comprados
+              </button>
+            </Link>
           </div>
           <div className="flex items-center relative gap-4">
             {isLoged ? (

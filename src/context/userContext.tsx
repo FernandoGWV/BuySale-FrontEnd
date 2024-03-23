@@ -18,7 +18,7 @@ interface IAuthContext {
   dataUser: IUser | null;
   deslogar(): void;
   newUser(data: any, file: any): void;
-  updateUser(data: {}, file: any): void;
+  updateUser(data: {}, file?: any): void;
   deleteUser(IdUser: number): void;
 }
 
@@ -93,7 +93,7 @@ const UserAuthContext = ({
     }
   };
   const updateUser = async (data: IUpdate, file: any) => {
-    console.log(file);
+    
     try {
       const response = await Api.put(
         `/account/updateAccount/${dataUser?.id}`,

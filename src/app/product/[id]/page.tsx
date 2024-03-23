@@ -9,6 +9,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { socket } from "@/socket";
 import { useForm } from "react-hook-form";
 import { UserIcon } from "@/imgs";
+import UpdateUser from "@/app/updateUser/page";
 
 interface IMessage {
   name: string;
@@ -21,7 +22,7 @@ interface IMessage {
 }
 
 const Product = ({ params }: { params: { id: any } }) => {
-  const { dataUser, deslogar, isLoged } = UserContextAuth();
+  const { dataUser, deslogar, isLoged, updateUser } = UserContextAuth();
   const [productUnique, setProductUnique] = useState<IProduct>();
   const [openProfile, setOpenProfile] = useState(false);
   const [socketInstance] = useState(socket());
@@ -148,6 +149,23 @@ const Product = ({ params }: { params: { id: any } }) => {
     );
   };
 
+  const buyProduct = async () => {
+
+    try {
+      const response = await Api.post('/products/purchased', {
+        user_id: dataUser?.id,
+        product_id: productUnique?.id
+      });
+      if(dataUser?.wallet && productUnique?.price)
+      {
+      const newWallet = dataUser.wallet - productUnique.price;
+      updateUser({id: dataUser.id ,wallet: newWallet})
+    }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <nav className="bg-myColor shadow-stone-500 shadow-md">
@@ -252,11 +270,12 @@ const Product = ({ params }: { params: { id: any } }) => {
               {productUnique?.images.map((item: any) => {
                 if (item.path_image !== imgUnique.path_image) {
                   return (
-                    <img
+                    <img 
+                      key={item.path_image}
                       src={`${process.env.NEXT_PUBLIC_URL}/${item.path_image}`}
                       alt="imageProduto"
                       className="h-28 w-28 rounded-md"
-                    ></img>
+                    />
                   );
                 }
               })}
@@ -284,7 +303,7 @@ const Product = ({ params }: { params: { id: any } }) => {
               </span>
             </div>
             <div>
-              <Button text={"Comprar"} />
+              <Button handleFunction={buyProduct} text={"Comprar"} />
             </div>
           </div>
         </div>
