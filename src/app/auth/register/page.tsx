@@ -8,14 +8,17 @@ import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { GoArrowLeft } from "react-icons/go";
 const Register = () => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, formState: {errors} } = useForm();
   const { newUser } = UserContextAuth();
   const [file, setFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const inputRef = useRef(null);
   const router = useRouter();
   const onSubmit = async (data: any) => {
-    await newUser(data, file);
+
+   if(file !==null){
+   await newUser(data, file);
+   }
   };
 
   const handleFileChange = (event: any) => {
@@ -37,27 +40,40 @@ const Register = () => {
         <div className="w-96 h-96 flex flex-col justify-center items-center">
           <h1 className="uppercase text-xl w-fit mb-4">cadastro</h1>
           <div className="flex flex-col gap-4  w-fit">
+            <div className="relative">
             <input
               type="text"
               placeholder="nome"
-              {...register("name")}
+              {...register("name", {required: true})}
               className="w-80 p-2 rounded outline-none shadow-md border 
                 border-gray-50"
             />
+            <span className="text-red-600 text-2xl absolute top-3 ml-3 ">*</span>
+            </div>
+            
+             {errors.name && <span className="text-red-600">Campo nome  obrigatório</span>}
+             <div className="relative">
             <input
               type="text"
               placeholder="email"
-              {...register("email")}
+              {...register("email", { required: true})}
               className="w-80 p-2 rounded outline-none shadow-md border 
               border-gray-50"
             />
+            <span className="text-red-600 text-2xl absolute top-3 ml-3 ">*</span>
+            </div>
+             {errors.email && <span className="text-red-600">Campo email obrigatório</span>}
+             <div className="relative">
             <input
               type="password"
               placeholder="Senha"
-              {...register("password")}
+              {...register("password",{required: true})}
               className="w-80 p-2 rounded outline-none shadow-md border 
               border-gray-50"
             />
+            <span className="text-red-600 text-2xl absolute top-3 ml-3 ">*</span>
+            </div>
+            {errors.password && <span className="text-red-600">Campo senha obrigatório</span>}
             <input
               type="number"
               placeholder="Valor a colocar na carteira..."
@@ -65,6 +81,7 @@ const Register = () => {
               className="w-80 p-2 rounded outline-none shadow-md border 
               border-gray-50"
             />
+            
             <input
               hidden
               type="file"
@@ -72,6 +89,7 @@ const Register = () => {
               onChange={handleFileChange}
               ref={inputRef}
             />
+          
             {imagePreview && (
               <img
                 src={imagePreview}
@@ -88,6 +106,7 @@ const Register = () => {
             >
               ESCOLHER FOTO
             </button>
+            
 
             <Button
               text={"Cadastrar-se"}
