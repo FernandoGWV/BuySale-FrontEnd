@@ -13,7 +13,7 @@ type IProps = {
   $active?: boolean;
   setModalActive?: Dispatch<SetStateAction<boolean>>;
   setGetOnlyProduct?: any;
-};
+}; 
 
 const ProductsList = (props: IProps) => {
   const { dataUser, deslogar, isLoged } = UserContextAuth();

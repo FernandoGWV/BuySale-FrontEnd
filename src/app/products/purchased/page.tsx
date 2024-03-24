@@ -1,6 +1,7 @@
 "use client";
 import { UserContextAuth } from "@/context/userContext";
-import { DesligarIcon } from "@/imgs";
+import { DesligarIcon, LikeIcon } from "@/imgs";
+import Api from "@/services/Api";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -8,10 +9,27 @@ const Purchased = () => {
   const [openProfile, setOpenProfile] = useState(false);
   const imgRef: any = useRef(null);
   const menuRef: any = useRef(null);
+  const [userProducts, setUserProducts] = useState<[]>();
   const { dataUser, isLoged, deslogar } = UserContextAuth();
   const onClickOutside = () => {
     setOpenProfile(false);
   };
+
+
+  useEffect(() => {
+    
+       const getProduct = async () => {
+    try {
+      if(dataUser?.id){
+      const result = await Api.get(`/products/listProductsPurchased/${dataUser?.id}`).then((dados) => {
+      ;
+     
+        setUserProducts(dados.data.data);
+      });}
+    } catch (error) {}
+  };
+    getProduct();
+  }, [dataUser?.id]);
 
   useEffect(() => {
     const handleClickOutSide: any = (event: any) => {
@@ -108,7 +126,7 @@ const Purchased = () => {
                       logar / registrar-se
                     </button>
                   </Link>
-                </>
+                </> 
               )}
             </div>
           </div>
@@ -117,7 +135,55 @@ const Purchased = () => {
           <h1 className="relative top-20 text-2xl border-black border-b-2 w-fit ">
             Produtos Comprados.
           </h1>
-        </div>
+    <div className="flex flex-wrap relative top-36 gap-9">
+     {userProducts?.map((item: any) => {
+      
+        return (
+          <>
+            <div className="flex flex-col  gap-10  shadow-md w-56  max-h-96 rounded-lg items-center ">
+              <div className="mb-2  w-52 flex flex-col justify-center items-start">
+                <div className="flex w-full  mt-1 items-center justify-between">
+                  <h1 className="uppercase border-b-2 border-myColor ">
+                    {item[0].title}
+                  </h1>
+                
+                </div>
+                <Link href={`/product/${item[0].id}`}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`${process.env.NEXT_PUBLIC_URL}/${item?.images[0].path_image}`}
+                    alt="imageProduct"
+                    className="mt-3 mx-auto rounded-lg w-52 h-52"
+                  />
+                </Link>
+                <div className="mt-2 flex items-center justify-between relative  my-0 w-full">
+                  <span
+                    className="bg-myColor text-neutral-300 p-1 px-2  rounded-lg"
+                    style={{ fontSize: 15 }}
+                  >
+                    {String(
+                      new Intl.NumberFormat("pt-BR", {
+                        currency: "BRL",
+                        style: "currency",
+                      }).format(item[0].price)
+                    )}
+                  </span>
+                  <div className="flex relative items-center ">
+                    <LikeIcon
+                      style={{
+                        fontSize: 30,
+                      }}
+                    />
+                    <span>{item.like === null ? 100 : item.like}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        );
+      })}
+      </div>
+          </div>
       </section>
     </>
   );
