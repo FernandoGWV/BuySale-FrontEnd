@@ -6,6 +6,10 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { GoArrowLeft } from "react-icons/go";
 
+
+
+
+
 const Login = () => {
   const [emailUser, setEmailUser] = useState("");
   const [passwordUser, setPasswordUser] = useState("");
@@ -32,13 +36,19 @@ const Login = () => {
               className="w-80 p-2 rounded outline-none shadow-md border 
               border-gray-50"
             />
-            <Button
+
+           { emailUser && passwordUser ? 
+              <Button
               text={"Entrar"}
               handleFunction={(e: any) => {
                 e.preventDefault();
                 sessionCreate(emailUser, passwordUser);
               }}
             />
+          
+             : 
+              <button disabled={true} className={`text-red-50 max-w-40 p-1 rounded bg-myColor opacity-45 uppercase`}>Entrar</button> 
+          }
           </form>
 
           <p>
