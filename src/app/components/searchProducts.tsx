@@ -9,6 +9,7 @@ import {
   useRef,
   useState,
 } from "react";
+import Link from "next/link";
 
 const SearchProducts = (props: any) => {
   const { dataUser, deslogar, isLoged } = UserContextAuth();
@@ -21,7 +22,7 @@ const SearchProducts = (props: any) => {
         if (dados.data.data) {
           const productsData = dados.data.data;
           const filteredProducts = productsData.filter((item: IProduct) =>
-            item.title.toLocaleLowerCase().includes(value)
+            item.title.toLocaleLowerCase().includes(value.toLocaleLowerCase())
           );
 
           setAllProducts(filteredProducts);
@@ -59,17 +60,18 @@ const SearchProducts = (props: any) => {
           {allProducts?.map((item: IProduct) => {
             return (
               <>
-                <div className="flex  shadow-md bg-stone-50 cursor-pointer items-center justify-between">
-                  <div className="flex items-center ml-2">
-                    <img
-                      src={`${process.env.NEXT_PUBLIC_URL}/${item?.images[0].path_image}`}
-                      alt="imageProduct"
-                      className="rounded-sm mr-2 w-24 h-24"
-                    />
-                    <h1>{item.title}</h1>
+                <Link href={`/product/${item.id}`}>
+                  <div className="flex  shadow-md bg-stone-50 cursor-pointer items-center justify-between">
+                    <div className="flex items-center ml-2">
+                      <img
+                        src={`${process.env.NEXT_PUBLIC_URL}/${item?.images[0].path_image}`}
+                        alt="imageProduct"
+                        className="rounded-sm mr-2 w-24 h-24"
+                      />
+                      <h1>{item.title}</h1>
+                    </div>
                   </div>
-                  <h4>@masaky</h4>
-                </div>
+                </Link>
               </>
             );
           })}

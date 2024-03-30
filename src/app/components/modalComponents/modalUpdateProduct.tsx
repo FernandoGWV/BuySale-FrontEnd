@@ -33,9 +33,16 @@ const ModalUpdateProduct = (props: IProps) => {
     }
   };
 
-  const onSubmit = async (data: {}) => {
+  const onSubmit = async (data: any) => {
     try {
-      const response = await Api.put(`/products/${getOnlyProduct.id}`, data);
+      const response = await Api.put(`/products/${getOnlyProduct.id}`, {
+        ...data,
+        price: getOnlyProduct.price ? getOnlyProduct.price : data.price,
+        title: getOnlyProduct.title ? getOnlyProduct.title : data.title,
+        descripte: getOnlyProduct.descripte
+          ? getOnlyProduct.descripte
+          : data.descripte,
+      });
       swal("Atualizado", "Produto atualizado com sucesso", "success").then(
         () => {
           window.location.reload();
@@ -79,7 +86,7 @@ const ModalUpdateProduct = (props: IProps) => {
               <img
                 src={`${process.env.NEXT_PUBLIC_URL}/${getOnlyProduct?.img.path_image}`}
                 alt=""
-                className="shadow-md p-4 rounded-lg w-40 h-40"
+                className="rounded-lg w-60 h-60"
               />
 
               <div className="flex w-full flex-col   justify-center items-center gap-5">

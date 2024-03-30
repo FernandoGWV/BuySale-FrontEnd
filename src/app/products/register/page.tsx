@@ -11,6 +11,8 @@ import { toast } from "react-toastify";
 const Register = () => {
   const router = useRouter();
   const { dataUser } = UserContextAuth();
+  const [validateFiles, setValidateFiles] = useState<boolean>(false);
+  const [files, setFiles] = useState(null);
   const {
     register,
     handleSubmit,
@@ -20,9 +22,10 @@ const Register = () => {
   const [imagesPreview, setImagePreview] = useState<[]>([]);
 
   const handleFileChange = (event: any) => {
+    setValidateFiles(false);
     const files = event.target.files;
     const imagesPreviewArray: any = [];
-
+    setFiles(files);
     if (files && files.length <= 4) {
       for (let i = 0; i < files.length; i++) {
         const reader: any = new FileReader();
@@ -47,13 +50,16 @@ const Register = () => {
   };
 
   const onSubmit = async (data: any) => {
-    const { files, title, descripte, price } = data;
-
+    const { title, descripte, price } = data;
+    if (!files) {
+      return setValidateFiles(true);
+    }
     try {
       const resultProduct = await Api.post(`/products/create/${dataUser?.id}`, {
         title,
         descripte,
         price,
+        files,
       }).then(async (dados: any) => {
         console.log(dados);
         toast.success(`${dados.data.message}`);
@@ -149,6 +155,11 @@ const Register = () => {
               <span className="text-red-600 text-2xl absolute top-3 ml-3 ">
                 *
               </span>
+              {validateFiles ? (
+                <span className="block text-red-600">
+                  Obrigátorio enviar pelo menos uma imagem
+                </span>
+              ) : null}
               <span className="block">
                 Só pode enviar no máximo 4 imagens por produto
               </span>

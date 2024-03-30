@@ -13,30 +13,32 @@ type IProps = {
   $active?: boolean;
   setModalActive?: Dispatch<SetStateAction<boolean>>;
   setGetOnlyProduct?: any;
-}; 
+};
 
 const ProductsList = (props: IProps) => {
-  const { dataUser, deslogar, isLoged } = UserContextAuth();
-  const [userProducts, setUserProducts] = useState<[]>();
-  const [getOnlyProduct, setGetOnlyProduct] = useState({});
-  const getProduct = async () => {
-    try {
-      const result = await Api.get("/products").then((dados) => {
-        const filteredProducts = dados.data.data.filter(
+  const { dataUser } = UserContextAuth();
+  const [userProducts, setUserProducts] = useState<[] | any>();
+  useEffect(() => {
+    const getProduct = async () => {
+      try {
+        const { data } = await Api.get("/products");
+        const filteredProducts = data.data.filter(
           (item: any) => item.id_user === dataUser?.id
         );
         setUserProducts(filteredProducts);
-      });
-    } catch (error) {}
-  };
+      } catch (error) {
+        console.error("Erro ao buscar produtos:", error);
+      }
+    };
+
+    if (dataUser?.id) {
+      getProduct();
+    }
+  }, [dataUser?.id]);
 
   useEffect(() => {
-    getProduct();
-  }, []);
-
-  useEffect(() => {
-    getProduct();
-  }, [dataUser]);
+    console.log("PRODUTOS DO USUARIO", userProducts);
+  }, [userProducts]);
 
   return (
     <>
@@ -75,9 +77,9 @@ const ProductsList = (props: IProps) => {
                     className="mt-3 mx-auto rounded-lg w-52 h-52"
                   />
                 </Link>
-                <div className="mt-2 flex items-center justify-between relative  my-0 w-full">
+                <div className="bg-myColor rounded-lg mt-2 flex items-center justify-between relative  my-0 w-full">
                   <span
-                    className="bg-myColor text-neutral-300 p-1 px-2  rounded-lg"
+                    className=" text-neutral-300 py-2 px-2  "
                     style={{ fontSize: 15 }}
                   >
                     {String(
@@ -87,14 +89,6 @@ const ProductsList = (props: IProps) => {
                       }).format(Number(item?.price))
                     )}
                   </span>
-                  <div className="flex relative items-center ">
-                    <LikeIcon
-                      style={{
-                        fontSize: 30,
-                      }}
-                    />
-                    <span>{item.like === null ? 100 : item.like}</span>
-                  </div>
                 </div>
               </div>
             </div>

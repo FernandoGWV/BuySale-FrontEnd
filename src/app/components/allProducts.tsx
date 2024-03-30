@@ -56,9 +56,9 @@ const AllProducts = (props: IProps) => {
                     className="mt-3 mx-auto rounded-lg w-52 h-52"
                   />
                 </Link>
-                <div className="mt-2 flex items-center justify-between relative  my-0 w-full">
+                <div className=" bg-myColor rounded-lg mt-2 flex items-center justify-center relative  my-0 w-full">
                   <span
-                    className="bg-myColor text-neutral-300 p-1 px-2  rounded-lg"
+                    className="text-neutral-300 py-2 px-2"
                     style={{ fontSize: 15 }}
                   >
                     {String(
@@ -68,14 +68,6 @@ const AllProducts = (props: IProps) => {
                       }).format(Number(item?.price))
                     )}
                   </span>
-                  <div className="flex relative items-center ">
-                    <LikeIcon
-                      style={{
-                        fontSize: 30,
-                      }}
-                    />
-                    <span>{item.like === null ? 100 : item.like}</span>
-                  </div>
                 </div>
               </div>
             </div>

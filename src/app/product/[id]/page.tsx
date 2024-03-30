@@ -150,17 +150,16 @@ const Product = ({ params }: { params: { id: any } }) => {
   };
 
   const buyProduct = async () => {
-
     try {
-      const response = await Api.post('/products/purchased', {
+      const response = await Api.post("/products/purchased", {
         user_id: dataUser?.id,
-        product_id: productUnique?.id
+        product_id: productUnique?.id,
       });
-      if(dataUser?.wallet && productUnique?.price)
-      {
-      const newWallet = dataUser.wallet - productUnique.price;
-      updateUser({id: dataUser.id ,wallet: newWallet})
-    }
+      console.log(response);
+      if (dataUser?.wallet && productUnique?.price) {
+        const newWallet = dataUser.wallet - productUnique.price;
+        updateUser({ id: dataUser.id, wallet: newWallet });
+      }
     } catch (error) {
       console.log(error);
     }
@@ -270,7 +269,7 @@ const Product = ({ params }: { params: { id: any } }) => {
               {productUnique?.images.map((item: any) => {
                 if (item.path_image !== imgUnique.path_image) {
                   return (
-                    <img 
+                    <img
                       key={item.path_image}
                       src={`${process.env.NEXT_PUBLIC_URL}/${item.path_image}`}
                       alt="imageProduto"
@@ -296,12 +295,7 @@ const Product = ({ params }: { params: { id: any } }) => {
                 }).format(Number(productUnique?.price))
               )}
             </span>
-            <div className="flex items-center">
-              <LikeIcon style={{ fontSize: 35, cursor: "pointer" }} />{" "}
-              <span className="text-xl">
-                {productUnique?.like ? productUnique?.like : 1000000}
-              </span>
-            </div>
+
             <div>
               <Button handleFunction={buyProduct} text={"Comprar"} />
             </div>

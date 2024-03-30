@@ -2,7 +2,7 @@
 import { UserContextAuth } from "@/context/userContext";
 import Link from "next/link";
 import { DesligarIcon, LikeIcon } from "@/imgs";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "../components/Button";
 import { GrAddCircle } from "react-icons/gr";
 import ProductsList from "../components/Products";
@@ -13,8 +13,27 @@ import { DiVim } from "react-icons/di";
 const Products = () => {
   const { dataUser, deslogar, isLoged } = UserContextAuth();
   const [modalActive, setModalActive] = useState(false);
+  const [openProfile, setOpenProfile] = useState(false);
   const [getOnlyProduct, setGetOnlyProduct] = useState({});
+  const imgRef: any = useRef(null);
+  const menuRef: any = useRef(null);
   const router = useRouter();
+
+  const onClickOutside = () => {
+    setOpenProfile(false);
+  };
+  useEffect(() => {
+    const handleClickOutSide: any = (event: any) => {
+      if (event.tagert !== imgRef.current && event.target !== menuRef.current) {
+        onClickOutside && onClickOutside();
+      }
+    };
+
+    document.addEventListener("click", handleClickOutSide);
+    return () => {
+      document.removeEventListener("click", handleClickOutSide);
+    };
+  }, [onClickOutside]);
 
   return (
     <>
@@ -46,21 +65,48 @@ const Products = () => {
                     HOME
                   </button>
                 </Link>
-                <button className="bg-white p-1 w-24 rounded-md uppercase">
-                  comprados
-                </button>
+                <Link href={"/products/purchased"}>
+                  <button className="bg-white p-1 w-24 rounded-md uppercase">
+                    comprados
+                  </button>
+                </Link>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center relative gap-4">
                 {isLoged ? (
                   <>
                     <p className="text-white uppercase text-xl">
                       {dataUser?.name}
                     </p>
                     <img
+                      ref={imgRef}
+                      onClick={() => {
+                        setOpenProfile((prev) => !prev);
+                      }}
                       src={`${process.env.NEXT_PUBLIC_URL}/${dataUser?.userIcon}`}
                       alt="userIcon"
-                      className="w-16  h-16 rounded-full"
+                      className="w-16  h-16 rounded-full cursor-pointer"
                     />
+                    {openProfile && (
+                      <div
+                        className="bg-white rounded-sm animate-dropdown shadow-md absolute z-50 top-20 right-0"
+                        ref={menuRef}
+                      >
+                        <div className="p-3 flex flex-col gap-2 justify-center">
+                          <Link
+                            className="transition ease-in-out delay-150  hover:-translate-y-1 hover:scale-80 hover:shadow-md duration-300 cursor-pointer hover:bg-myColor hover:bg-opacity-10 p-1 rounded-md"
+                            href={"/updateUser"}
+                          >
+                            Editar perfil
+                          </Link>
+                          <Link
+                            className="transition ease-in-out delay-150  hover:-translate-y-1 hover:scale-80 hover:shadow-md duration-300 cursor-pointer hover:bg-myColor hover:bg-opacity-10 p-1 rounded-md"
+                            href={"/products/register"}
+                          >
+                            Criar um novo Produto
+                          </Link>
+                        </div>
+                      </div>
+                    )}
                     <DesligarIcon
                       className="text-3xl hover:cursor-pointer"
                       onClick={() => deslogar()}
